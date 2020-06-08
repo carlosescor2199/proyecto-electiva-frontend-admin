@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Grid, Form, Button, Card, Icon, Table, Message, Search } from 'semantic-ui-react'
+import { Grid, Form, Button, Card, Icon, Table, Message } from 'semantic-ui-react'
 
 export default function PageProfesor() {
     const [profesores, setProfesores] = useState([]);
@@ -34,13 +34,11 @@ export default function PageProfesor() {
             idProfesor: values.idProfesor,
             nombre: values.nombre,
             apellido: values.apellido,
-            password: values.password
         })
         setValues({
             idProfesor: '',
             nombre: '',
             apellido: '',
-            password: ''
         })
         if (res.data.error) {
             setMessage({ error: res.data.error, success: '' })
@@ -101,7 +99,11 @@ export default function PageProfesor() {
 
     const getProfesores = async () => {
         const res = await axios.get('http://localhost:4000/profesores/');
-        setProfesores(res.data)
+        if(res.data.error){
+            setMessage({success: '', error: res.data.error})
+        } else {
+            setProfesores(res.data)
+        }
     }
 
     const onChange = (e) => {
@@ -181,21 +183,12 @@ export default function PageProfesor() {
                                         value={values.apellido}
                                         onChange={onChange}
                                     />
-                                    <Form.Input
-                                        label="Password"
-                                        placeholder="Password..."
-                                        name="password"
-                                        type="password"
-                                        value={values.password}
-                                        onChange={onChange}
-                                    />
                                     <Button type="submit"
                                         primary
                                         disabled={
                                             values.idProfesor === '' ||
                                                 values.nombre === '' ||
-                                                values.apellido === '' ||
-                                                values.password === ''
+                                                values.apellido === ''
                                                 ? true : false
                                         }
                                     >
